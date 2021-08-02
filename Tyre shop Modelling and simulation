@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int show_demand()
+{
+    srand(time(0));
+    return rand() % 100;
+}
+int main()
+{
+    int P, Q, available_stock, presentDay, dueDate, unitsDue, startDate, requirement, reorderExpense;
+    float total_expense;
+
+    for (int i = 0; i < 5; i++)
+    {
+        printf("Input the values for P and Q:\n");
+        scanf("%d %d", &P, &Q);
+        startDate = 1;
+        dueDate = 0;
+        presentDay = startDate;
+        unitsDue = 0;
+        reorderExpense = 10;
+        available_stock = 115;
+        total_expense = 0;
+
+        while (presentDay <= 180)
+        {
+            if (presentDay == dueDate)
+            {
+                available_stock += Q;
+                unitsDue = 0;
+            }
+            requirement = show_demand();
+            if (requirement <= available_stock)
+            {
+                available_stock -= requirement;
+                total_expense += available_stock * 0.75;
+            }
+            else
+            {
+                total_expense += (requirement - available_stock) * 18;
+                available_stock = 0;
+            }
+            if (available_stock + unitsDue <= P)
+            {
+                unitsDue = Q;
+                total_expense += reorderExpense * unitsDue;
+                dueDate = presentDay + 3;
+            }
+            presentDay++;
+        }
+        printf("Total Expense for P=%d and Q=%d is %f\n", P, Q, total_expense);
+    }
+    return 0;
+}
